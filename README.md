@@ -13,10 +13,13 @@ Supported files: [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".x
 
 ### Installation
 
+Step 1:
+
 `pip3 install msoffice2pdf`
 
-##### Windons Only
-Delete all cache files from the folder below in case there is any error with Microsoft Office conversion: C:\Users\<User>\AppData\Local\Programs\Python\Python39\Lib\site-packages\comtypes\gen
+Step 2(Windons Only):
+
+Delete all cache files from the folder below in case there is any error with Microsoft Office conversion: `C:\Users\<User>\AppData\Local\Programs\Python\Python39\Lib\site-packages\comtypes\gen`
 
 ### Example:
 

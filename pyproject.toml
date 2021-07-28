@@ -1,6 +1,6 @@
 [project]
 name = "msoffice2pdf"
-version = "0.0.3"
+version = "0.0.5"
 description = "Create a pyproject.toml file for an existing project."
 authors = [
     "Robson Soares de Lima <robsonlimadeveloper@gmail.com>"
