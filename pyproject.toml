@@ -1,6 +1,6 @@
 [project]
 name = "msoffice2pdf"
-version = "0.0.5"
+version = "0.0.7"
 description = "This package aims to convert Office file types to PDF using Microsoft Office or LibreOffice."
 authors = [
     "Robson Soares de Lima <robsonlimadeveloper@gmail.com>"
