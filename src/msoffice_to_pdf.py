@@ -34,9 +34,9 @@ def __convert_to_pdf_libreoffice(source, output_dir, timeout=None)-> dict:
         output = filename.group(1).replace("\\", "/")
 
     except Exception as exception:
-        return {"output": None, "error": exception.__dict__["details"]}
+        return None
 
-    return {"output": output, "error": None}
+    return output
 
 def __convert_doc_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.doc/*.docx files to pdf'''
@@ -52,9 +52,9 @@ def __convert_doc_to_pdf_msoffice(source, output_dir):
 
     except Exception as exception:
         app.Quit()
-        return {"output": None, "error": exception.__dict__["details"]}
+        return None
 
-    return {"output": output, "error": None}
+    return output
 
 def __convert_xls_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.xls/*.xlsx files to pdf'''
@@ -67,8 +67,8 @@ def __convert_xls_to_pdf_msoffice(source, output_dir):
         app.Quit()
     except Exception as exception:
         app.Quit()
-        return {"output": None, "error": exception.__dict__["details"]}
-    return {"output": output, "error": None}
+        return None
+    return output
 
 def __convert_ppt_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.ppt/*.pptx files to pdf'''
@@ -81,8 +81,8 @@ def __convert_ppt_to_pdf_msoffice(source, output_dir):
         app.Quit()
     except Exception as exception:
         app.Quit()
-        return {"output": None, "error": exception.__dict__["details"]}
-    return {"output": output, "error": None}
+        return None
+    return output
 
 def __verify_source_is_supported_extension(file_extension):
     """This function very if source is supported extension"""
@@ -107,4 +107,4 @@ def convert(source, output_dir, soft="msoffice"):
         else:
             return __convert_to_pdf_libreoffice(source, output_dir)
     else:
-        return {"output": None, "error": "Unsupported source file or non-existent output directory."}
+        return None
