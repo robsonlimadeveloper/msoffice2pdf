@@ -1,41 +1,47 @@
 import os
 import subprocess
 import re
-import datetime
-import platform
+import shutil
+from pathlib import Path, PurePosixPath
+from datetime import datetime
+from sys import platform
 
-if platform.system() == "Windows":
+if platform == "win32":
     from comtypes import client
 
-def remove_files(temp_files_attach):
+def __remove_files(temp_files_attach):
     """Remove temporary files"""
     for file_temp in temp_files_attach:
         if os.path.isfile(file_temp):
             os.remove(file_temp)
 
-def convert_to_pdf_libreoffice(source: str, timeout=None)-> str:
+def __convert_to_pdf_libreoffice(source, output_dir, timeout=None)-> dict:
     """Convert MS Office files using LibreOffice"""
+    output = None
 
-    temp_filename = os.path.dirname(source)+datetime.now().strftime("%Y%m%d%H%M%S%f")+source
-    subprocess.run(['cp', os.path.dirname(source)+source, temp_filename],\
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,\
-        timeout=timeout, check=True)
+    temp_filename = os.path.dirname(output_dir)+"/"+datetime.now().\
+        strftime("%Y%m%d%H%M%S%f")+os.path.basename(source)
+
+    shutil.copy2(source, temp_filename)
+
     try:
         process = subprocess.run(['soffice', '--headless', '--convert-to',\
             'pdf', '--outdir', os.path.dirname(source), temp_filename],\
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,\
                     timeout=timeout, check=True)
         filename = re.search('-> (.*?) using filter', process.stdout.decode("latin-1"))
+        __remove_files([temp_filename])
+        output = filename.group(1).replace("\\", "/")
 
     except Exception as exception:
         return {"output": None, "error": exception.__dict__["details"]}
 
-    remove_files([temp_filename])
+    return {"output": output, "error": None}
 
-    return filename.group(1)
-
-def convert_doc_to_pdf_msoffice(source: str, output: str)-> str:
+def __convert_doc_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.doc/*.docx files to pdf'''
+    output = os.path.dirname(output_dir)+"/"+datetime.now().\
+        strftime("%Y%m%d%H%M%S%f")+Path(source).stem+".pdf"
 
     ws_pdf_format: int = 17
     app = client.CreateObject("Word.Application")
@@ -50,8 +56,10 @@ def convert_doc_to_pdf_msoffice(source: str, output: str)-> str:
 
     return {"output": output, "error": None}
 
-def convert_xls_to_pdf_msoffice(source: str, output: str)-> str:
+def __convert_xls_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.xls/*.xlsx files to pdf'''
+    output = os.path.dirname(output_dir)+"/"+datetime.now().\
+        strftime("%Y%m%d%H%M%S%f")+Path(source).stem+".pdf"
     app = client.CreateObject("Excel.Application")
     try:
         sheets = app.Workbooks.Open(source)
@@ -62,8 +70,10 @@ def convert_xls_to_pdf_msoffice(source: str, output: str)-> str:
         return {"output": None, "error": exception.__dict__["details"]}
     return {"output": output, "error": None}
 
-def convert_ppt_to_pdf_msoffice(source: str, output: str)-> str:
+def __convert_ppt_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.ppt/*.pptx files to pdf'''
+    output = os.path.dirname(output_dir)+"/"+datetime.now().\
+        strftime("%Y%m%d%H%M%S%f")+Path(source).stem+".pdf"
     app = client.CreateObject("PowerPoint.Application")
     try:
         obj = app.Presentations.Open(source, False, False, False)
@@ -73,3 +83,28 @@ def convert_ppt_to_pdf_msoffice(source: str, output: str)-> str:
         app.Quit()
         return {"output": None, "error": exception.__dict__["details"]}
     return {"output": output, "error": None}
+
+def __verify_source_is_supported_extension(file_extension):
+    """This function very if source is supported extension"""
+    supported_extensions = [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx"]
+    return file_extension in supported_extensions
+
+def convert(source, output_dir, soft="msoffice"):
+    file_extension = PurePosixPath(source).suffix
+
+    if __verify_source_is_supported_extension(file_extension) and os.path.isdir(output_dir):
+
+        if platform == "win32" and soft == "msoffice":
+            if file_extension in [".doc", ".docx"]:
+                return __convert_doc_to_pdf_msoffice(source, output_dir)
+            elif file_extension in [".xls", ".xlsx"]:
+                return __convert_xls_to_pdf_msoffice(source, output_dir)
+            elif file_extension in [".ppt", ".pptx"]:
+                return __convert_ppt_to_pdf_msoffice(source, output_dir)
+
+        elif platform == "win32" and soft == "libreoffice":
+            return __convert_to_pdf_libreoffice(source, output_dir)
+        else:
+            return __convert_to_pdf_libreoffice(source, output_dir)
+    else:
+        return {"output": None, "error": "Unsupported source file or non-existent output directory."}
