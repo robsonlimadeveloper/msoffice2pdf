@@ -1,7 +1,7 @@
-import os
-import subprocess
-import re
-import shutil
+from os import path, remove
+from subprocess import run, PIPE
+from re import search
+from shutil import copy2
 from pathlib import Path, PurePosixPath
 from datetime import datetime
 from sys import platform
@@ -12,24 +12,24 @@ if platform == "win32":
 def __remove_files(temp_files_attach):
     """Remove temporary files"""
     for file_temp in temp_files_attach:
-        if os.path.isfile(file_temp):
-            os.remove(file_temp)
+        if path.isfile(file_temp):
+            remove(file_temp)
 
 def __convert_to_pdf_libreoffice(source, output_dir, timeout=None)-> dict:
     """Convert MS Office files using LibreOffice"""
     output = None
 
-    temp_filename = os.path.dirname(output_dir)+"/"+datetime.now().\
-        strftime("%Y%m%d%H%M%S%f")+os.path.basename(source)
+    temp_filename = output_dir+"/"+datetime.now().\
+        strftime("%Y%m%d%H%M%S%f")+path.basename(source)
 
-    shutil.copy2(source, temp_filename)
+    copy2(source, temp_filename)
 
     try:
-        process = subprocess.run(['soffice', '--headless', '--convert-to',\
-            'pdf', '--outdir', os.path.dirname(source), temp_filename],\
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,\
+        process = run(['soffice', '--headless', '--convert-to',\
+            'pdf', '--outdir', path.dirname(source), temp_filename],\
+                stdout=PIPE, stderr=PIPE,\
                     timeout=timeout, check=True)
-        filename = re.search('-> (.*?) using filter', process.stdout.decode("latin-1"))
+        filename = search('-> (.*?) using filter', process.stdout.decode("latin-1"))
         __remove_files([temp_filename])
         output = filename.group(1).replace("\\", "/")
 
@@ -40,7 +40,7 @@ def __convert_to_pdf_libreoffice(source, output_dir, timeout=None)-> dict:
 
 def __convert_doc_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.doc/*.docx files to pdf'''
-    output = os.path.dirname(output_dir)+"/"+datetime.now().\
+    output = output_dir+"/"+datetime.now().\
         strftime("%Y%m%d%H%M%S%f")+Path(source).stem+".pdf"
 
     ws_pdf_format: int = 17
@@ -58,7 +58,7 @@ def __convert_doc_to_pdf_msoffice(source, output_dir):
 
 def __convert_xls_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.xls/*.xlsx files to pdf'''
-    output = os.path.dirname(output_dir)+"/"+datetime.now().\
+    output = output_dir+"/"+datetime.now().\
         strftime("%Y%m%d%H%M%S%f")+Path(source).stem+".pdf"
     app = client.CreateObject("Excel.Application")
     try:
@@ -72,7 +72,7 @@ def __convert_xls_to_pdf_msoffice(source, output_dir):
 
 def __convert_ppt_to_pdf_msoffice(source, output_dir):
     '''This fuction convert *.ppt/*.pptx files to pdf'''
-    output = os.path.dirname(output_dir)+"/"+datetime.now().\
+    output = output_dir+"/"+datetime.now().\
         strftime("%Y%m%d%H%M%S%f")+Path(source).stem+".pdf"
     app = client.CreateObject("PowerPoint.Application")
     try:
@@ -86,16 +86,16 @@ def __convert_ppt_to_pdf_msoffice(source, output_dir):
 
 def __verify_source_is_supported_extension(file_extension):
     """This function very if source is supported extension"""
-    supported_extensions = [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx"]
+    supported_extensions = [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".xml"]
     return file_extension in supported_extensions
 
 def convert(source, output_dir, soft="msoffice"):
     file_extension = PurePosixPath(source).suffix
 
-    if __verify_source_is_supported_extension(file_extension) and os.path.isdir(output_dir):
+    if __verify_source_is_supported_extension(file_extension) and path.isdir(output_dir):
 
         if platform == "win32" and soft == "msoffice":
-            if file_extension in [".doc", ".docx"]:
+            if file_extension in [".doc", ".docx", ".txt", ".xml"]:
                 return __convert_doc_to_pdf_msoffice(source, output_dir)
             elif file_extension in [".xls", ".xlsx"]:
                 return __convert_xls_to_pdf_msoffice(source, output_dir)
