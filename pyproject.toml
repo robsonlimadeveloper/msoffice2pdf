@@ -1,7 +1,29 @@
+[project]
+name = "msoffice2pdf"
+version = "0.0.3"
+description = "Create a pyproject.toml file for an existing project."
+authors = [
+    "Robson Soares de Lima <robsonlimadeveloper@gmail.com>"
+]
+license = "MIT"
+readme = "README.md"
+python = "^3.6"
+homepage = "https://github.com/robsonlimadeveloper/msoffice2pdf"
+repository = "https://github.com/robsonlimadeveloper/msoffice2pdf"
+documentation = "https://github.com/robsonlimadeveloper/msoffice2pdf"
+
+keywords = ["msoffice", "pdf", "convert", "libreoffice"]
+
+classifiers = [
+    "Topic :: Software Development"
+]
+
 [build-system]
+
 requires = [
-    "setuptools>=42",
-    "wheel",
-    "comtypes"
+    "setuptools >= 35.0.2",
+    "setuptools_scm >= 2.0.0, <3",
+    "comtypes >= 1.1.10"
 ]
 build-backend = "setuptools.build_meta"
+
