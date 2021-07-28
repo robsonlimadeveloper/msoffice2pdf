@@ -1,7 +1,7 @@
 [project]
 name = "msoffice2pdf"
 version = "0.0.5"
-description = "Create a pyproject.toml file for an existing project."
+description = "This package aims to convert Office file types to PDF using Microsoft Office or LibreOffice."
 authors = [
     "Robson Soares de Lima <robsonlimadeveloper@gmail.com>"
 ]
@@ -12,10 +12,19 @@ homepage = "https://github.com/robsonlimadeveloper/msoffice2pdf"
 repository = "https://github.com/robsonlimadeveloper/msoffice2pdf"
 documentation = "https://github.com/robsonlimadeveloper/msoffice2pdf"
 
-keywords = ["msoffice", "pdf", "convert", "libreoffice"]
+keywords = ["msoffice", "pdf", "convert", "libreoffice", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".xml"]
 
 classifiers = [
-    "Topic :: Software Development"
+    "Topic :: Software Development",
+    "Environment :: Win32 (MS Windows)",
+	"Operating System :: Microsoft :: Windows",
+    "Topic :: Operating System :: Unix",
+	"Topic :: Office/Business :: Office Suites",
+	"Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Filesystems",
+    "Topic :: Utilities",
+    "Topic :: Text Processing :: General"
 ]
 
 [build-system]
@@ -26,4 +35,3 @@ requires = [
     "comtypes >= 1.1.10"
 ]
 build-backend = "setuptools.build_meta"
-
