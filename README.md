@@ -17,9 +17,38 @@ Step 1:
 
 `pip3 install msoffice2pdf`
 
-Step 2(Windons Only):
+Step 2
 
-Delete all cache files from the folder below in case there is any error with Microsoft Office conversion: `C:\Users\<User>\AppData\Local\Programs\Python\Python39\Lib\site-packages\comtypes\gen`
+### (Windons Only):
+
+For Microsoft Office use:
+
+*   Delete all cache files from the folder below in case there is any error with Microsoft Office conversion:
+ `C:\Users\<User>\AppData\Local\Programs\Python\Python39\Lib\site-packages\comtypes\gen`
+
+*   Efetuar a configuração abaixo(Windows Server):
+
+> 1. Start -> dcomcnfg.exe
+> 1. Computers -> My Computer
+> 1. DCOM Config 
+> 1. Select the Microsoft Word 97-2003 Documents -> Properties
+> 1. Tab Identity, change from Launching User to Interactive User
+
+For LibreOffice use:
+
+Install LibreOffice last version:
+
+https://www.libreoffice.org/download/download/
+
+###  (Ubuntu Only):
+
+Install LibreOffice:
+
+`sudo add-apt-repository -y ppa:libreoffice/ppa`
+
+`sudo apt-get update`
+
+`sudo apt-get install libreoffice libreoffice-style-breeze`
 
 ### Example:
 
