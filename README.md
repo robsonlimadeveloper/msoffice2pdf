@@ -26,13 +26,33 @@ For Microsoft Office use:
 *   Delete all cache files from the folder below in case there is any error with Microsoft Office conversion:
  `C:\Users\<User>\AppData\Local\Programs\Python\Python39\Lib\site-packages\comtypes\gen`
 
-*   Efetuar a configuração abaixo(Windows Server):
+*   For Windows Server
 
-> 1. Start -> dcomcnfg.exe
-> 1. Computers -> My Computer
-> 1. DCOM Config 
-> 1. Select the Microsoft Word 97-2003 Documents -> Properties
-> 1. Tab Identity, change from Launching User to Interactive User
+> **Step 1:**
+>
+> Start > Run > dcomcnfg.exe
+>
+> **Step 2:**
+>
+>  Select: Computers -> My Computer -> Config DCOM -> Microsoft Word 97-2003 Documents -> Properties
+>  Tab general select level authentication to None
+>  Tab security select customize and add All
+>  Tab identify select this user and add Admin user and password
+>  
+> **Step 3:**
+>  
+> Select: Computers -> My Computer -> Config DCOM -> Microsoft Excel Application -> Properties
+> Tab general select level authentication to None
+> Tab security select customize and add All
+> Tab identify select this user and add Admin user and password
+>  
+> **Step 4:**
+>  
+> Select: Computers -> My Computer -> Config DCOM -> Microsoft PowerPoint Application -> Properties
+> Tab general select level authentication to None
+> Tab security select customize and add All
+> Tab identify select this user and add Admin user and password
+
 
 For LibreOffice use:
 
