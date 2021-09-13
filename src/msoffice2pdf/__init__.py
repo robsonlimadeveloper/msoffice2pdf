@@ -1,3 +1,4 @@
+import sys
 from os import path, remove
 from subprocess import run, PIPE
 from re import search
@@ -5,6 +6,15 @@ from shutil import copy2
 from pathlib import Path, PurePosixPath
 from datetime import datetime
 from sys import platform
+
+try:
+    #3.8+
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
+
+__version__ = version(__package__)
+platforms_supported = ["linux", "win32"]
 
 if platform == "win32":
     from comtypes import client
@@ -89,22 +99,60 @@ def __verify_source_is_supported_extension(file_extension):
     supported_extensions = [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".xml"]
     return file_extension in supported_extensions
 
-def convert(source, output_dir, soft="msoffice"):
+def __convert_using_msoffice(source, output_dir, file_extension):
+    """"""
+    if file_extension in [".doc", ".docx", ".txt", ".xml"]:
+                return __convert_doc_to_pdf_msoffice(source, output_dir)
+    elif file_extension in [".xls", ".xlsx"]:
+        return __convert_xls_to_pdf_msoffice(source, output_dir)
+    elif file_extension in [".ppt", ".pptx"]:
+        return __convert_ppt_to_pdf_msoffice(source, output_dir)
+
+def convert(source, output_dir, soft=0):
+    """This function convert file by software selected"""
     file_extension = PurePosixPath(source).suffix
 
     if __verify_source_is_supported_extension(file_extension) and path.isdir(output_dir):
 
-        if platform == "win32" and soft == "msoffice":
-            if file_extension in [".doc", ".docx", ".txt", ".xml"]:
-                return __convert_doc_to_pdf_msoffice(source, output_dir)
-            elif file_extension in [".xls", ".xlsx"]:
-                return __convert_xls_to_pdf_msoffice(source, output_dir)
-            elif file_extension in [".ppt", ".pptx"]:
-                return __convert_ppt_to_pdf_msoffice(source, output_dir)
-
-        elif platform == "win32" and soft == "libreoffice":
+        if platform == "win32" and soft == 0:
+            return __convert_using_msoffice(source, output_dir, file_extension)
+        elif platform in platforms_supported and soft == 1:
+            return __convert_to_pdf_libreoffice(source, output_dir)
+        elif platform in platforms_supported:
             return __convert_to_pdf_libreoffice(source, output_dir)
         else:
-            return __convert_to_pdf_libreoffice(source, output_dir)
+            raise Exception("Platform or conversion software not supported.")
     else:
-        return None
+        raise NotImplementedError("File extension not supported")
+
+def cli():
+    """This function receive params to use the convertion"""
+    import textwrap
+    import argparse
+
+    if "--version" in sys.argv:
+        print(__version__)
+        sys.exit(0)
+
+    description = textwrap.dedent(
+        """"""
+    )
+
+    formatter_class = lambda prog: argparse.RawDescriptionHelpFormatter(\
+        prog, max_help_position=32)
+    parser = argparse.ArgumentParser(description=description,\
+        formatter_class=formatter_class)
+    parser.add_argument("input",help="input file")
+    parser.add_argument("output_dir", nargs="?", help="output file or folder")
+    parser.add_argument("--soft", action="store_true", default="msoffice",\
+        help="choose software to conversion")
+    parser.add_argument("--version", action="store_true", default=False,\
+        help="display version and exit")
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
+    else:
+        args = parser.parse_args()
+
+    convert(args.input, args.output_dir, args.soft)

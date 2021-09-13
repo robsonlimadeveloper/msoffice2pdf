@@ -1,0 +1,9 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/msoffice2pdf/__init__.py
+src/msoffice2pdf.egg-info/PKG-INFO
+src/msoffice2pdf.egg-info/SOURCES.txt
+src/msoffice2pdf.egg-info/dependency_links.txt
+src/msoffice2pdf.egg-info/top_level.txt

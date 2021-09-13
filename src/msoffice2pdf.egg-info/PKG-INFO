@@ -1,0 +1,61 @@
+Metadata-Version: 2.1
+Name: msoffice2pdf
+Version: 0.0.7
+Summary: This package aims to convert Office file types to PDF using Microsoft Office or LibreOffice.
+Home-page: https://github.com/robsonlimadeveloper/msoffice2pdf
+Author: Robson Soares de Lima
+Author-email: robsonlimadeveloper@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/robsonlimadeveloper/msoffice2pdf/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Environment :: Win32 (MS Windows)
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: Unix
+Classifier: Topic :: Software Development
+Classifier: Topic :: Office/Business :: Office Suites
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Filesystems
+Classifier: Topic :: Utilities
+Classifier: Topic :: Text Processing :: General
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# msoffice2pdf
+
+This package aims to convert Microsoft Office file types to PDF. This lib uses the comtypes package which makes it easy to access and implement custom, dispatch-based COM interfaces or LibreOffice software.
+
+For use in `Windows` environment and `soft=0` Microsoft Office must be installed.
+
+For use in `Windows` environment and `soft=1` you need the latest version of LibreOffice(soffice) installed.
+
+For `Ubuntu(linux)` environment it is only possible to use `soft=1`, that is, LibreOffice(soffice).
+
+Supported files: [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".xml"]
+
+
+### Installation
+
+Step 1:
+
+`pip3 install msoffice2pdf`
+
+Step 2(Windons Only):
+
+Delete all cache files from the folder below in case there is any error with Microsoft Office conversion: `C:\Users\<User>\AppData\Local\Programs\Python\Python39\Lib\site-packages\comtypes\gen`
+
+### Example:
+
+```python
+from msoffice2pdf import convert
+
+output = convert(source="C:/Users/<User>/Downloads/file.docx", output_dir="C:/Users/<User>/Downloads", soft=0)
+
+print(output)
+```
+
+
+
