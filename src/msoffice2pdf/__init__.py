@@ -38,7 +38,7 @@ def convert_to_pdf_libreoffice(source, output_dir, timeout=None) -> str:
             ['soffice', '--headless', '--convert-to', 'pdf', '--outdir', output_dir, temp_filename],
             stdout=PIPE, stderr=PIPE, timeout=timeout, check=True
         )
-        filename = search(r'-> (.*?) using filter', process.stdout.decode("latin-1"))
+        filename = search(r'-> (.*?) using filter', process.stdout.decode("utf-8"))
         remove_files([temp_filename])
         output = filename.group(1).replace("\\", "/") if filename else None
     except Exception as e:
